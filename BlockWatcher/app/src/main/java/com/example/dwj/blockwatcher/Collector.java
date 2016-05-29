@@ -1,5 +1,7 @@
 package com.example.dwj.blockwatcher;
 
+import android.util.SparseArray;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,12 +15,15 @@ public class Collector {
 
     private int mInterval;
     private int mDelay;
+    private Thread mThread;
     private ScheduledExecutorService mScheduleService = null;
+    private SparseArray<TraceInfo> mCache = new SparseArray<>(10);
 
 
-    private Collector(int interval,int delay){
+    private Collector(int interval,int delay,Thread thread){
         this.mInterval = interval;
         this.mDelay = delay;
+        this.mThread = thread;
     }
 
     private void initExecutor(){
@@ -26,7 +31,12 @@ public class Collector {
     }
 
     private void startCollect(){
-        mScheduleService.scheduleAtFixedRate(null,mDelay,mInterval, TimeUnit.MILLISECONDS);
+        mScheduleService.scheduleAtFixedRate(new CollectRunnable(mThread, new CollectInter() {
+            @Override
+            public void onCollect(long collectTime,String info) {
+
+            }
+        }),mDelay,mInterval, TimeUnit.MILLISECONDS);
     }
 
     private void stopCollect(){
@@ -37,18 +47,27 @@ public class Collector {
     }
 
 
-    class CollecRunnable implements Runnable{
+    class CollectRunnable implements Runnable{
 
         public Thread mThread;
+        private CollectInter mInter;
 
-        public CollecRunnable(Thread thread){
+        public CollectRunnable(Thread thread, CollectInter inter){
             this.mThread = thread;
+            this.mInter = inter;
         }
 
         @Override
         public void run() {
             String info = ThreadStackTraceUtil.getThreadStackInfoStr(mThread);
+            if(mInter != null){
+                mInter.onCollect(System.currentTimeMillis(),info);
+            }
         }
+    }
+
+    interface CollectInter{
+        public void onCollect(long collectTime,String info);
     }
 
 }
