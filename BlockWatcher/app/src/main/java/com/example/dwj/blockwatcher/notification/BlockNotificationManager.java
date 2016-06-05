@@ -31,17 +31,25 @@ public class BlockNotificationManager {
     public void showBlockInfoNotification(Context context, BlockInfo blockInfo){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setContentTitle("BlockInfo");
-        builder.setContentText(blockInfo.getBlockEntrance());
+        builder.setContentText("BlockingTime : " + String.valueOf(blockInfo.getBlockingTime()));
         builder.setShowWhen(true);
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.alert);
 
-        NotificationCompat.InboxStyle inboxStyle = new android.support.v4.app.NotificationCompat.InboxStyle(builder);
+        NotificationCompat.BigTextStyle bigTextStyleBuilder = new android.support.v4.app.NotificationCompat.BigTextStyle(builder);
         String[] traceInfos = blockInfo.getTraceInfo().getUserCodeTraceWay();
-        for(int i = traceInfos.length - 1; i >= 0; i --){
-            inboxStyle.addLine(traceInfos[i]);
+        bigTextStyleBuilder.setBigContentTitle("BlockDetailInfo");
+        bigTextStyleBuilder.setSummaryText(blockInfo.getBlockEntrance());
+        String[] codeWay = blockInfo.getTraceInfo().getUserCodeTraceWay();
+        StringBuilder strBuilder = new StringBuilder();
+        for(int i = codeWay.length - 1; i >= 0; i --){
+            strBuilder.append(codeWay[i]);
+            strBuilder.append("\n");
         }
-        Notification notification = inboxStyle.build();
+
+        strBuilder.deleteCharAt(strBuilder.length() - 1);
+        bigTextStyleBuilder.bigText(strBuilder.toString());
+        Notification notification = bigTextStyleBuilder.build();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0,notification);
 

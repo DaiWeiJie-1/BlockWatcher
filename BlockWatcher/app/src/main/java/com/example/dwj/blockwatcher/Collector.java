@@ -24,7 +24,8 @@ public class Collector {
     private Thread mThread;
     private ScheduledExecutorService mScheduleService = null;
     private CopyOnWriteArrayList<TraceInfo> mCache = new CopyOnWriteArrayList<TraceInfo>();
-
+    private long mStartCollectTime = 0;
+    private long mEndCollectTime = 0;
 
     public Collector(int interval,int delay,Thread thread){
         this.mInterval = interval;
@@ -52,12 +53,14 @@ public class Collector {
                 mCache.add(trace);
             }
         }),mDelay,mInterval, TimeUnit.MILLISECONDS);
+        mStartCollectTime = System.currentTimeMillis();
     }
 
     public void stopCollect(){
         if(mScheduleService != null && !mScheduleService.isShutdown()){
             mScheduleService.shutdownNow();
             mScheduleService = null;
+            mEndCollectTime = System.currentTimeMillis();
         }
     }
 
@@ -65,12 +68,19 @@ public class Collector {
         if(mCache != null){
             mCache.clear();
         }
+        mStartCollectTime = 0;
+        mEndCollectTime = 0;
+    }
+
+    public long getBlockingTime(){
+        return mEndCollectTime - mStartCollectTime;
     }
 
     public BlockInfo getBlockInfo(){
         BlockInfo info = new BlockInfo();
         info.setOccurTime(System.currentTimeMillis());
         info.setTraceInfo(mCache.get(mCache.size()/2));
+        info.setBlockingTime(getBlockingTime());
         return info;
     }
 
