@@ -5,14 +5,24 @@ package com.example.dwj.blockwatcher;
  */
 public class ThreadStackTraceUtil {
 
-    public static String getThreadStackInfoStr(Thread thd){
+    public static String[] getThreadStackInfos(Thread thd){
         StackTraceElement[] stackTrace = thd.getStackTrace();
-        StringBuilder strBuilder = new StringBuilder();
-        for(StackTraceElement element : stackTrace){
-            strBuilder.append(element.toString());
-            strBuilder.append("\n");
+        int length = stackTrace.length;
+        String[] traces = new String[length];
+        for(int i = 0; i < length ; i ++){
+            traces[i] = stackTrace[i].toString();
         }
 
-        return strBuilder.toString();
+        return traces;
+    }
+
+    public static String[] getThreadStackMethodInvokeInfos(Thread thd){
+        StackTraceElement[] stackTrace = thd.getStackTrace();
+        int length = stackTrace.length;
+        String[] methods = new String[length];
+        for(int i = 0; i < length ; i ++){
+            methods[i] = stackTrace[i].getMethodName();
+        }
+        return methods;
     }
 }

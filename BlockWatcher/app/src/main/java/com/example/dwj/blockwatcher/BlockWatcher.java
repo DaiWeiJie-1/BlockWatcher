@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
  */
 public class BlockWatcher {
 
-    private final static int THRESHOLD_TIME = 300;
+    private final static int THRESHOLD_TIME = 500;
 
     private static WeakReference<Context> contextWeakRef;
     private static volatile BlockWatcher mContext = null;
@@ -47,7 +47,7 @@ public class BlockWatcher {
 
     public void install(){
         if(contextWeakRef != null && contextWeakRef.get() != null){
-            mLooperLogger = new LooperLogger(contextWeakRef.get(), new BlockHandler(THRESHOLD_TIME,Thread.currentThread()));
+            mLooperLogger = new LooperLogger(contextWeakRef.get(), new BlockHandler(contextWeakRef.get(),THRESHOLD_TIME,Thread.currentThread()));
             mLooperLogger.install();
         }
     }
