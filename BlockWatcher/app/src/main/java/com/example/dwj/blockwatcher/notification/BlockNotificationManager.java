@@ -29,6 +29,10 @@ public class BlockNotificationManager {
     }
 
     public void showBlockInfoNotification(Context context, BlockInfo blockInfo){
+        if(blockInfo.getTraceInfo().getUserCodeTraceWay().length < 0){
+            return;
+        }
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setContentTitle("BlockInfo");
         builder.setContentText("BlockingTime : " + String.valueOf(blockInfo.getBlockingTime()));
@@ -37,7 +41,6 @@ public class BlockNotificationManager {
         builder.setSmallIcon(R.drawable.alert);
 
         NotificationCompat.BigTextStyle bigTextStyleBuilder = new android.support.v4.app.NotificationCompat.BigTextStyle(builder);
-        String[] traceInfos = blockInfo.getTraceInfo().getUserCodeTraceWay();
         bigTextStyleBuilder.setBigContentTitle("BlockDetailInfo");
         bigTextStyleBuilder.setSummaryText(blockInfo.getBlockEntrance());
         String[] codeWay = blockInfo.getTraceInfo().getUserCodeTraceWay();

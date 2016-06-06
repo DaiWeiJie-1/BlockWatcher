@@ -9,13 +9,11 @@ import java.lang.ref.WeakReference;
  */
 public class BlockWatcher {
 
-    private final static int THRESHOLD_TIME = 500;
+    private final static int THRESHOLD_TIME = 2000;
 
     private static WeakReference<Context> contextWeakRef;
     private static volatile BlockWatcher mContext = null;
     private static LooperLogger mLooperLogger = null;
-
-    private BlockWatcher(){};
 
     public static BlockWatcher watch(Context context){
         if(mContext == null){
