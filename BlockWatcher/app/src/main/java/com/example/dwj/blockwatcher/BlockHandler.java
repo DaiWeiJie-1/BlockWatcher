@@ -1,7 +1,10 @@
 package com.example.dwj.blockwatcher;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.example.dwj.blockwatcher.notification.BlockNotificationManager;
 
 /**
  * Created by dwj on 2016/5/29.
@@ -15,10 +18,15 @@ public class BlockHandler implements IPrinter{
     private long mDispatchHanderTime = 0;
     private long mFinshHandlerTime = 0;
     private Thread mThread;
+    private Collector mCollector = null;
+    private LooperHandlerState mState = LooperHandlerState.FINISH;
+    private Context mContext;
 
-    public BlockHandler(int thresholdTime,Thread thread){
+    public BlockHandler(Context context,int thresholdTime,Thread thread){
         this.mThresholdTime = thresholdTime;
         this.mThread = thread;
+        this.mContext = context;
+        this.mCollector = new Collector((int)(mThresholdTime * 0.7),0,mThread);
     }
 
     @Override
@@ -32,18 +40,21 @@ public class BlockHandler implements IPrinter{
         }
 
         if(x.contains(DISPATCH_LOG)){
+            mCollector.startCollect();
             mDispatchHanderTime = System.currentTimeMillis();
-            String stackTraceInfo = ThreadStackTraceUtil.getThreadStackInfoStr(mThread);
+            mState = LooperHandlerState.DISPATCH;
         }else if(x.contains(FINISH_LOG)){
-            if(mDispatchHanderTime != 0){
+            if(mState == LooperHandlerState.DISPATCH){
                 mFinshHandlerTime = System.currentTimeMillis();
                 if(mFinshHandlerTime - mDispatchHanderTime >= mThresholdTime){
-                    String stackTraceInfo = ThreadStackTraceUtil.getThreadStackInfoStr(mThread);
-                    Log.d("block",stackTraceInfo);
+                    mCollector.stopCollect();
+                    mCollector.showCacheSomething();
+                    BlockNotificationManager.getInstance().showBlockInfoNotification(mContext,mCollector.getBlockInfo());
                 }
 
             }
 
+            mState = LooperHandlerState.FINISH;
             mDispatchHanderTime = 0;
             mFinshHandlerTime = 0;
         }

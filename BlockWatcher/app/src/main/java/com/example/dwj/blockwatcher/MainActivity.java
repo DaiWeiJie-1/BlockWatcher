@@ -1,6 +1,7 @@
 package com.example.dwj.blockwatcher;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -30,13 +31,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                compute();
             }
         });
 
 
-        block();
 
     }
 
@@ -48,10 +47,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void block(){
         try {
-            Thread.sleep(3000);
+            Thread.sleep(6000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private double compute() {
+        double result = 0;
+        for (int i = 0; i < 1000000; ++i) {
+            result += Math.acos(Math.cos(i));
+            result -= Math.asin(Math.sin(i));
+        }
+        return result;
     }
 
     @Override
