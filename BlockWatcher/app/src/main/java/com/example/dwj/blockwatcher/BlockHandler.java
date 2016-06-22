@@ -1,14 +1,9 @@
 package com.example.dwj.blockwatcher;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Process;
-import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.example.dwj.blockwatcher.notification.BlockNotificationManager;
-import com.example.dwj.demo.MainActivity;
 
 /**
  * Created by dwj on 2016/5/29.
@@ -30,7 +25,7 @@ public class BlockHandler implements IPrinter{
         this.mThresholdTime = thresholdTime;
         this.mThread = thread;
         this.mContext = context;
-        this.mCollector = new Collector((int)(mThresholdTime * 0.5),0,mThread);
+        this.mCollector = new Collector(mContext,(int)(mThresholdTime * 0.5),0,mThread);
     }
 
     @Override
@@ -48,30 +43,14 @@ public class BlockHandler implements IPrinter{
             mDispatchHanderTime = System.currentTimeMillis();
             mState = LooperHandlerState.DISPATCH;
         }else if(x.contains(FINISH_LOG)){
-            if(System.currentTimeMillis() - mDispatchHanderTime >= 5000){
-                mCollector.stopCollect();
-                mCollector.showCacheSomething();
-                BlockNotificationManager.getInstance().showBlockInfoNotification(mContext,mCollector.getBlockInfo());
-
-                Intent it = new Intent(mContext,MainActivity.class);
-                it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                it.addCategory(Intent.CATEGORY_LAUNCHER);
-                it.setAction(Intent.ACTION_MAIN);
-                mContext.startActivity(it);
-                Process.killProcess(Process.myPid());
-            }
-
-
             if(mState == LooperHandlerState.DISPATCH){
                 mFinshHandlerTime = System.currentTimeMillis();
                 if(mFinshHandlerTime - mDispatchHanderTime >= mThresholdTime){
-                    mCollector.stopCollect();
                     mCollector.showCacheSomething();
                     BlockNotificationManager.getInstance().showBlockInfoNotification(mContext,mCollector.getBlockInfo());
                 }
-
+                mCollector.stopCollect();
             }
-
             mState = LooperHandlerState.FINISH;
             mDispatchHanderTime = 0;
             mFinshHandlerTime = 0;

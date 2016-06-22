@@ -5,7 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.support.v7.app.NotificationCompat;
 
-import com.example.dwj.blockwatcher.BlockInfo;
+import com.example.dwj.blockwatcher.bean.BlockInfo;
 import com.example.dwj.blockwatcher.R;
 
 /**
@@ -29,6 +29,9 @@ public class BlockNotificationManager {
     }
 
     public void showBlockInfoNotification(Context context, BlockInfo blockInfo){
+        if(context == null || blockInfo == null){
+            return;
+        }
         if(blockInfo.getTraceInfo().getUserCodeTraceWay().length < 0){
             return;
         }

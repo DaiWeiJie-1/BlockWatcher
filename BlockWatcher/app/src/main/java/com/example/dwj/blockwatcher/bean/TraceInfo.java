@@ -1,4 +1,4 @@
-package com.example.dwj.blockwatcher;
+package com.example.dwj.blockwatcher.bean;
 
 import java.util.ArrayList;
 import java.util.Arrays;

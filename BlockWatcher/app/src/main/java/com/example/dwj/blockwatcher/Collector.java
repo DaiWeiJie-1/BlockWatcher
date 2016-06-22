@@ -1,18 +1,18 @@
 package com.example.dwj.blockwatcher;
 
-import android.os.Process;
+import android.content.Context;
 import android.util.Log;
-import android.util.SparseArray;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import com.example.dwj.blockwatcher.bean.BlockInfo;
+import com.example.dwj.blockwatcher.bean.TraceInfo;
+import com.example.dwj.blockwatcher.deadBlockHandler.AbstractDeadBlockHandler;
+import com.example.dwj.blockwatcher.deadBlockHandler.IDeadBlockIntercept;
+import com.example.dwj.blockwatcher.deadBlockHandler.NotifyBlockInfoDeadBlockIntercept;
+import com.example.dwj.blockwatcher.deadBlockHandler.RestartDeadBlockHandler;
+
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,18 +20,24 @@ import java.util.concurrent.TimeUnit;
  */
 public class Collector {
 
+    private Context mContext;
     private int mInterval;
     private int mDelay;
     private Thread mThread;
     private ScheduledExecutorService mScheduleService = null;
+    private AbstractDeadBlockHandler mDeadBlockHandler = null;
+    private IDeadBlockIntercept mDeadBlockIntercept = null;
     private CopyOnWriteArrayList<TraceInfo> mCache = new CopyOnWriteArrayList<TraceInfo>();
     private long mStartCollectTime = 0;
     private long mEndCollectTime = 0;
 
-    public Collector(int interval,int delay,Thread thread){
+    public Collector(Context context,int interval, int delay, Thread thread){
+        this.mContext  = context;
         this.mInterval = interval;
         this.mDelay = delay;
         this.mThread = thread;
+        mDeadBlockHandler = new RestartDeadBlockHandler(mContext);
+        mDeadBlockIntercept = new NotifyBlockInfoDeadBlockIntercept(mContext);
     }
 
     private void initExecutor(){
@@ -44,17 +50,28 @@ public class Collector {
         stopCollect();
         initExecutor();
         clearCache();
+        mStartCollectTime = System.currentTimeMillis();
+        mDeadBlockHandler.setStarTime(mStartCollectTime);
         mScheduleService.scheduleAtFixedRate(new CollectRunnable(mThread, new CollectInter() {
             @Override
             public void onCollect(long collectTime,String[] info,String[] methods) {
-                TraceInfo trace = new TraceInfo();
-                trace.setOccurTime(collectTime);
-                trace.setDetailInfos(info);
-                trace.setInvokeMethods(methods);
-                mCache.add(trace);
+                collectTraceInfo(collectTime,info,methods);
+                if(mDeadBlockHandler != null){
+                    boolean deadBlock = mDeadBlockHandler.updateNowTimeAndDealWith(System.currentTimeMillis());
+                    if(deadBlock){
+                        stopCollect();
+                    }
+                }
             }
         }),mDelay,mInterval, TimeUnit.MILLISECONDS);
-        mStartCollectTime = System.currentTimeMillis();
+    }
+
+    private void collectTraceInfo(long collectTime,String[] info,String[] methods){
+        TraceInfo trace = new TraceInfo();
+        trace.setOccurTime(collectTime);
+        trace.setDetailInfos(info);
+        trace.setInvokeMethods(methods);
+        mCache.add(trace);
     }
 
     public void stopCollect(){

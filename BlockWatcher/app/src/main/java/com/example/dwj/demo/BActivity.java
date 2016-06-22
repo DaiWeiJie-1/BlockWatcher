@@ -28,7 +28,7 @@ public class BActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                block();
+                blockShort();
             }
         });
 
@@ -42,13 +42,20 @@ public class BActivity extends AppCompatActivity {
 //        BlockWatcher.unWatch(this);
     }
 
-    private void block(){
+    private void blockShort(){
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void blockLong(){
         try {
             Thread.sleep(6000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     private double compute() {
