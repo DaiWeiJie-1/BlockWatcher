@@ -3,6 +3,8 @@ package com.example.dwj.blockwatcher.deadBlockHandler;
 import android.content.Context;
 
 import com.example.dwj.blockwatcher.bean.BlockInfo;
+import com.example.dwj.blockwatcher.outputter.IOutputter;
+import com.example.dwj.blockwatcher.outputter.LoggerOutputter;
 
 /**
  * Description : <Content><br>
@@ -14,12 +16,12 @@ import com.example.dwj.blockwatcher.bean.BlockInfo;
  * @ModifyTime : 16-6-22 下午6:02
  * @ModifyDescription : <Content>
  */
-public class NotifyBlockInfoDeadBlockIntercept implements IDeadBlockIntercept {
+public class OutPutBlockInfoDeadBlockIntercept implements IDeadBlockIntercept {
 
     private Context mContext;
     private BlockInfo mBlockInfo;
 
-    public NotifyBlockInfoDeadBlockIntercept(Context context) {
+    public OutPutBlockInfoDeadBlockIntercept(Context context) {
         this.mContext = context;
     }
 
@@ -29,6 +31,7 @@ public class NotifyBlockInfoDeadBlockIntercept implements IDeadBlockIntercept {
 
     @Override
     public void intercept() {
-        BlockNotificationManager.getInstance().showBlockInfoNotification(mContext,mBlockInfo);
+        IOutputter outputter = new LoggerOutputter();
+        outputter.outPutBlockInfo(mBlockInfo);
     }
 }

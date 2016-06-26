@@ -21,7 +21,7 @@ public class RestartDeadBlockHandler extends AbstractDeadBlockHandler{
 
     private Context mContext;
 
-    private static final long JUDGE_DEAD_TIME = 4000;
+    private static final long JUDGE_DEAD_TIME = 40000;
 
     public RestartDeadBlockHandler(Context context){
         mContext = context;

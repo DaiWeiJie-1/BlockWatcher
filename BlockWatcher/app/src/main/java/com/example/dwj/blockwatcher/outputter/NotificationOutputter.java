@@ -7,7 +7,6 @@ import android.support.v7.app.NotificationCompat;
 
 import com.example.dwj.blockwatcher.R;
 import com.example.dwj.blockwatcher.bean.BlockInfo;
-import com.example.dwj.blockwatcher.outputter.IOutputter;
 
 import java.lang.ref.WeakReference;
 

@@ -7,7 +7,7 @@ import com.example.dwj.blockwatcher.bean.BlockInfo;
 import com.example.dwj.blockwatcher.bean.TraceInfo;
 import com.example.dwj.blockwatcher.deadBlockHandler.AbstractDeadBlockHandler;
 import com.example.dwj.blockwatcher.deadBlockHandler.IDeadBlockIntercept;
-import com.example.dwj.blockwatcher.deadBlockHandler.NotifyBlockInfoDeadBlockIntercept;
+import com.example.dwj.blockwatcher.deadBlockHandler.OutPutBlockInfoDeadBlockIntercept;
 import com.example.dwj.blockwatcher.deadBlockHandler.RestartDeadBlockHandler;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -37,7 +37,7 @@ public class Collector {
         this.mDelay = delay;
         this.mThread = thread;
         mDeadBlockHandler = new RestartDeadBlockHandler(mContext);
-        mDeadBlockIntercept = new NotifyBlockInfoDeadBlockIntercept(mContext);
+        mDeadBlockIntercept = new OutPutBlockInfoDeadBlockIntercept(mContext);
     }
 
     private void initExecutor(){

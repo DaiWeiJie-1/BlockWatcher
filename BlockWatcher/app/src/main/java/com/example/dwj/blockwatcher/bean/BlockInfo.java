@@ -1,7 +1,10 @@
 package com.example.dwj.blockwatcher.bean;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by dwj on 2016/6/5.
@@ -44,13 +47,8 @@ public class BlockInfo {
 
     public String getOccurTimeStr(){
         String time = "";
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-        try {
-            time = format.parse(String.valueOf(mOccurTime)).toString();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        time = format.format(new Date(getOccurTime())).toString();
         return time;
     }
 

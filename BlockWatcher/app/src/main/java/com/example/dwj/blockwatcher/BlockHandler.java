@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.example.dwj.blockwatcher.outputter.IOutputter;
+import com.example.dwj.blockwatcher.outputter.LoggerOutputter;
 import com.example.dwj.blockwatcher.outputter.NotificationOutputter;
 
 /**
@@ -28,7 +29,7 @@ public class BlockHandler implements IPrinter{
         this.mThread = thread;
         this.mContext = context;
         this.mCollector = new Collector(mContext,(int)(mThresholdTime * 0.5),0,mThread);
-        this.mIOutputter = new NotificationOutputter(mContext);
+        this.mIOutputter = new LoggerOutputter();
     }
 
     @Override
