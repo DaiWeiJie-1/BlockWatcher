@@ -3,7 +3,6 @@ package com.example.dwj.blockwatcher.deadBlockHandler;
 import android.content.Context;
 
 import com.example.dwj.blockwatcher.bean.BlockInfo;
-import com.example.dwj.blockwatcher.notification.BlockNotificationManager;
 
 /**
  * Description : <Content><br>

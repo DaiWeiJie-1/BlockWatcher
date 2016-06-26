@@ -1,32 +1,31 @@
-package com.example.dwj.blockwatcher.notification;
+package com.example.dwj.blockwatcher.outputter;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.v7.app.NotificationCompat;
 
-import com.example.dwj.blockwatcher.bean.BlockInfo;
 import com.example.dwj.blockwatcher.R;
+import com.example.dwj.blockwatcher.bean.BlockInfo;
+import com.example.dwj.blockwatcher.outputter.IOutputter;
+
+import java.lang.ref.WeakReference;
 
 /**
- * Created by dwj on 2016/6/5.
+ * 通知输出类
+ * Created by dwj on 2016/6/26.
  */
-public class BlockNotificationManager {
+public class NotificationOutputter implements IOutputter {
 
-    private volatile static BlockNotificationManager mInstance;
+    private final static String CONTENT_TITLE = "BlockInfo";
+    private final static String CONTENT_TEXT_PART = "BlockingTime : ";
+    private final static String BIG_CONTENT_TITLE = "BlockDetailInfo";
 
-    private BlockNotificationManager(){};
+    private WeakReference<Context> mWeakContextRef = null;
 
-    public static BlockNotificationManager getInstance(){
-        if(mInstance == null){
-            synchronized (BlockNotificationManager.class){
-                if(mInstance == null){
-                    mInstance = new BlockNotificationManager();
-                }
-            }
-        }
-        return mInstance;
-    }
+    public NotificationOutputter(Context context){
+        mWeakContextRef = new WeakReference<Context>(context);
+    };
 
     public void showBlockInfoNotification(Context context, BlockInfo blockInfo){
         if(context == null || blockInfo == null){
@@ -37,14 +36,14 @@ public class BlockNotificationManager {
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setContentTitle("BlockInfo");
-        builder.setContentText("BlockingTime : " + String.valueOf(blockInfo.getBlockingTime()));
+        builder.setContentTitle(CONTENT_TITLE);
+        builder.setContentText(CONTENT_TEXT_PART + String.valueOf(blockInfo.getBlockingTime()));
         builder.setShowWhen(true);
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.alert);
 
         NotificationCompat.BigTextStyle bigTextStyleBuilder = new android.support.v4.app.NotificationCompat.BigTextStyle(builder);
-        bigTextStyleBuilder.setBigContentTitle("BlockDetailInfo");
+        bigTextStyleBuilder.setBigContentTitle(BIG_CONTENT_TITLE);
         bigTextStyleBuilder.setSummaryText(blockInfo.getBlockEntrance());
         String[] codeWay = blockInfo.getTraceInfo().getUserCodeTraceWay();
         StringBuilder strBuilder = new StringBuilder();
@@ -61,4 +60,11 @@ public class BlockNotificationManager {
 
     }
 
+
+    @Override
+    public void outPutBlockInfo(BlockInfo blockInfo) {
+        if(mWeakContextRef != null && mWeakContextRef.get() != null){
+            showBlockInfoNotification(mWeakContextRef.get(),blockInfo);
+        }
+    }
 }

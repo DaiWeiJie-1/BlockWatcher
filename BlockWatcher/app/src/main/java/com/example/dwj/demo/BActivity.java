@@ -52,7 +52,7 @@ public class BActivity extends AppCompatActivity {
 
     private void blockLong(){
         try {
-            Thread.sleep(6000);
+            Thread.sleep(8000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
