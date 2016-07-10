@@ -11,6 +11,8 @@ import java.util.Date;
  */
 public class BlockInfo {
 
+    private final static String STRING_CHANGE_LINE = "\n";
+
     private TraceInfo mTraceInfo;
 
     private long mBlockingTime;
@@ -63,5 +65,28 @@ public class BlockInfo {
         }
 
         return "";
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[ Block Occured ] ");
+        builder.append(STRING_CHANGE_LINE);
+        builder.append("[ Occured Time ] : ");
+        builder.append(getOccurTimeStr());
+        builder.append(STRING_CHANGE_LINE);
+        builder.append("[ Blocking Time ] : ");
+        builder.append(getBlockingTime());
+        builder.append(STRING_CHANGE_LINE);
+        builder.append("[ Block trace ] ");
+        builder.append(STRING_CHANGE_LINE);
+        if(getTraceInfo() != null && getTraceInfo().getDetailInfos() != null){
+            for(String detail : getTraceInfo().getDetailInfos()){
+                builder.append(detail);
+                builder.append(STRING_CHANGE_LINE);
+            }
+        }
+
+        return builder.toString();
     }
 }

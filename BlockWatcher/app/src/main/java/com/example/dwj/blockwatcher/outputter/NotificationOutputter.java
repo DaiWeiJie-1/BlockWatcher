@@ -8,23 +8,15 @@ import android.support.v7.app.NotificationCompat;
 import com.example.dwj.blockwatcher.R;
 import com.example.dwj.blockwatcher.bean.BlockInfo;
 
-import java.lang.ref.WeakReference;
-
 /**
  * 通知输出类
  * Created by dwj on 2016/6/26.
  */
-public class NotificationOutputter implements IOutputter {
+public class NotificationOutputter extends AbstractOutputter{
 
     private final static String CONTENT_TITLE = "BlockInfo";
     private final static String CONTENT_TEXT_PART = "BlockingTime : ";
     private final static String BIG_CONTENT_TITLE = "BlockDetailInfo";
-
-    private WeakReference<Context> mWeakContextRef = null;
-
-    public NotificationOutputter(Context context){
-        mWeakContextRef = new WeakReference<Context>(context);
-    };
 
     public void showBlockInfoNotification(Context context, BlockInfo blockInfo){
         if(context == null || blockInfo == null){
@@ -61,9 +53,17 @@ public class NotificationOutputter implements IOutputter {
 
 
     @Override
-    public void outPutBlockInfo(BlockInfo blockInfo) {
-        if(mWeakContextRef != null && mWeakContextRef.get() != null){
-            showBlockInfoNotification(mWeakContextRef.get(),blockInfo);
-        }
+    protected void outPutBlockInfo(String blockInfoStr) {
+        return;
+    }
+
+    @Override
+    public void handle(Context context,BlockInfo info) {
+        showBlockInfoNotification(context,info);
+    }
+
+    @Override
+    protected String getBlockInfoStr(BlockInfo info, Context context) {
+        return null;
     }
 }
