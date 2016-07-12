@@ -22,7 +22,7 @@ public abstract class AbstractOutputter {
             return null;
         }
         String baseInfoStr = BaseInfoUtil.getBaseInfo(context);
-        return baseInfoStr + info.toString();
+        return baseInfoStr + info.toString() + "\n\n\n\n";
     }
 
 }

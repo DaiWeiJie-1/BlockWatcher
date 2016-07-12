@@ -3,6 +3,7 @@ package com.example.dwj.blockwatcher;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.example.dwj.blockwatcher.bean.BlockInfo;
 import com.example.dwj.blockwatcher.outputter.OutputterChains;
 
 /**
@@ -47,7 +48,9 @@ public class BlockHandler implements IPrinter{
                 mFinshHandlerTime = System.currentTimeMillis();
                 if(mFinshHandlerTime - mDispatchHanderTime >= mThresholdTime){
                     mCollector.showCacheSomething();
-                    OutputterChains.getInstance().deliver(mContext,mCollector.getBlockInfo());
+                    BlockInfo info = mCollector.getBlockInfo();
+                    info.setBlockingTime(mFinshHandlerTime - mDispatchHanderTime);
+                    OutputterChains.getInstance().deliver(mContext,info);
                 }
                 mCollector.stopCollect();
             }

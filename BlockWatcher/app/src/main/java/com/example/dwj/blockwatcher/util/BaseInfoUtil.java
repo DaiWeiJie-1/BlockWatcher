@@ -169,7 +169,7 @@ public class BaseInfoUtil {
         //app name
         builder.append(INDENT);
         builder.append("App Name : ");
-        builder.append(applicationInfo.name);
+        builder.append(applicationInfo.loadLabel(packageManager));
         builder.append(LINE_BREAK);
 
         //package name

@@ -28,7 +28,7 @@ public class BActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                blockShort();
+                blockLong();
             }
         });
 
@@ -52,7 +52,7 @@ public class BActivity extends AppCompatActivity {
 
     private void blockLong(){
         try {
-            Thread.sleep(8000);
+            Thread.sleep(15000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -18,7 +18,7 @@ import java.util.Date;
  */
 public class BlockWatcher {
 
-    private final static int THRESHOLD_TIME = 2000;
+    private final static int THRESHOLD_TIME = 4000;
 
     private static WeakReference<Context> contextWeakRef;
     private static volatile BlockWatcher mInstance = null;
@@ -60,7 +60,7 @@ public class BlockWatcher {
             OutputterChains.getInstance().addItem(new NotificationOutputter());
             OutputterChains.getInstance().addItem(new FileOutPutter(Environment.getExternalStorageDirectory()
                     .getAbsolutePath() + File.separator + contextWeakRef.get().getPackageName() + File.separator
-                    + "BlockWatch",new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime())));
+                    + "BlockWatchDir",new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime()) + ".txt"));
         }
     }
 

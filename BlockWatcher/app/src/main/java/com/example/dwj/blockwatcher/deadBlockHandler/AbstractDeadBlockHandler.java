@@ -1,5 +1,7 @@
 package com.example.dwj.blockwatcher.deadBlockHandler;
 
+import com.example.dwj.blockwatcher.bean.BlockInfo;
+
 /**
  * Description : <Content><br>
  * CreateTime : 16-6-22 下午4:45
@@ -12,9 +14,13 @@ package com.example.dwj.blockwatcher.deadBlockHandler;
  */
 public abstract class AbstractDeadBlockHandler {
 
+    protected static final long JUDGE_DEAD_TIME = 9000;
+
     protected long mStartTime;
 
     protected IDeadBlockIntercept mIntercept;
+
+    protected BlockInfo mInfo;
 
     public abstract void handleDeadBlock();
 
@@ -22,6 +28,10 @@ public abstract class AbstractDeadBlockHandler {
 
     public void setStarTime(long startTime){
         mStartTime = startTime;
+    }
+
+    public void setBlockInfo(BlockInfo info){
+        this.mInfo = info;
     }
 
     public void setIntercept(IDeadBlockIntercept intercept){
@@ -35,7 +45,10 @@ public abstract class AbstractDeadBlockHandler {
     public boolean updateNowTimeAndDealWith(long nowTime){
        if(isDeadBlock(mStartTime,nowTime)){
            if(mIntercept != null){
-               mIntercept.intercept();
+               if(mInfo != null){
+                   mInfo.setBlockingTime(nowTime - mStartTime);
+                   mIntercept.intercept(mInfo);
+               }
            }
            handleDeadBlock();
            return true;

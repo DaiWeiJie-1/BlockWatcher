@@ -38,6 +38,7 @@ public class Collector {
         this.mThread = thread;
         mDeadBlockHandler = new RestartDeadBlockHandler(mContext);
         mDeadBlockIntercept = new OutPutBlockInfoDeadBlockIntercept(mContext);
+        mDeadBlockHandler.setIntercept(mDeadBlockIntercept);
     }
 
     private void initExecutor(){
@@ -57,6 +58,7 @@ public class Collector {
             public void onCollect(long collectTime,String[] info,String[] methods) {
                 collectTraceInfo(collectTime,info,methods);
                 if(mDeadBlockHandler != null){
+                    mDeadBlockHandler.setBlockInfo(getBlockInfo());
                     boolean deadBlock = mDeadBlockHandler.updateNowTimeAndDealWith(System.currentTimeMillis());
                     if(deadBlock){
                         stopCollect();

@@ -55,17 +55,14 @@ public class FileOutPutter extends AbstractOutputter{
             fw = new FileWriter(file, true);
             bw = new BufferedWriter(fw);
             bw.append(blockInfoStr);
+            bw.append("\r\n");
+            bw.append("\r\n");
+            bw.append("\r\n");
+            bw.append("\r\n");
+            bw.flush();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (fw != null) {
-                try {
-                    fw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
             if (bw != null) {
                 try {
                     bw.close();

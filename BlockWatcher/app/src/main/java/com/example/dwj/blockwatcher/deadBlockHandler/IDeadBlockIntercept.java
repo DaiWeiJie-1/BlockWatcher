@@ -1,5 +1,7 @@
 package com.example.dwj.blockwatcher.deadBlockHandler;
 
+import com.example.dwj.blockwatcher.bean.BlockInfo;
+
 /**
  * Description : 死阻塞前拦截器
  * CreateTime : 16-6-22 下午5:54
@@ -11,5 +13,5 @@ package com.example.dwj.blockwatcher.deadBlockHandler;
  * @ModifyDescription : <Content>
  */
 public interface IDeadBlockIntercept {
-    public void intercept();
+    public void intercept(BlockInfo info);
 }

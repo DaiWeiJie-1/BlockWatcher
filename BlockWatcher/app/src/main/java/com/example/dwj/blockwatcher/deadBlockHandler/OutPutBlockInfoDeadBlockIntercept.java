@@ -18,18 +18,16 @@ import com.example.dwj.blockwatcher.outputter.OutputterChains;
 public class OutPutBlockInfoDeadBlockIntercept implements IDeadBlockIntercept {
 
     private Context mContext;
-    private BlockInfo mBlockInfo;
 
     public OutPutBlockInfoDeadBlockIntercept(Context context) {
         this.mContext = context;
     }
 
-    public void setBlockInfo(BlockInfo blockInfo){
-         this.mBlockInfo = blockInfo;
-    }
-
     @Override
-    public void intercept() {
-        OutputterChains.getInstance().deliver(mContext,mBlockInfo);
+    public void intercept(BlockInfo info) {
+        if(info == null){
+            return;
+        }
+        OutputterChains.getInstance().deliver(mContext,info);
     }
 }
